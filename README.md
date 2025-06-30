@@ -15,79 +15,17 @@ The following diagram illustrates the general machine learning workflow followed
 
 ```mermaid
 graph TD
-    %% Node Definitions (flat list first)
-    A[Start]
-    B(Load Dataset)
-    C(Define Label & Features)
-    D(Split Data: Training & Test Sets)
-    E(Train Initial LR Model with Default C)
-    F(Make Predictions: Probability & Class Labels)
-    G{Evaluate: Confusion Matrix & Initial Accuracy}
-    H(Perform GridSearchCV for Optimal C)
-    I(Train LR Model with Optimal C)
-    J(Make Predictions: Probability & Class Labels)
-    K{Evaluate: Confusion Matrix & Improved Accuracy}
-    L(Visualize: Precision-Recall Curves)
-    M(Visualize: ROC Curves & Calculate AUC)
-    N(Feature Selection: SelectKBest)
-    O(Retrain LR Model with Selected Features)
-    P{Evaluate: AUC after Feature Selection}
-    Q(Save Optimal Model using Pickle)
-    R[End]
-
-    %% Connections
-    A --> B
-    B --> C
-    C --> D
-    D -- Data Processed --> E
-    E --> F
-    F --> G
-    G -- Optimization Needed --> H
-    H --> I
-    I --> J
-    J --> K
-    K --> L
-    L --> M
-    M -- Feature Analysis --> N
-    N --> O
-    O --> P
-    P -- High AUC? --> Q
-    Q --> R
-
-    %% Subgraph Grouping (applies visual grouping to already defined nodes)
-    subgraph Data Preparation
-        A --> D
-    end
-
-    subgraph Model Training & Evaluation (Default)
-        E --> G
-    end
-
-    subgraph Model Optimization & Refinement
-        H --> M
-    end
-
-    subgraph Feature Engineering & Persistence
-        N --> R
-    end
-
-    %% Apply some styling for visual appeal
-    classDef start_end fill:#a8e6cf,stroke:#333,stroke-width:2px;
-    classDef data_process fill:#ffcccb,stroke:#a33,stroke-width:2px;
-    classDef model_eval fill:#d4eeff,stroke:#2b5f7e,stroke-width:2px;
-    classDef optimization fill:#fffacd,stroke:#d4a400,stroke-width:2px;
-    classDef persist fill:#b8e0d4,stroke:#3a7d44,stroke-width:2px;
-
-    class A,R start_end;
-    class B,C,D data_process;
-    class E,F,G model_eval;
-    class H,I,J,K,L,M optimization;
-    class N,O,P,Q persist;
-
-    %% Dotted lines for specific transitions
-    style H stroke-dasharray: 5 5;
-    style N stroke-dasharray: 5 5;
-
-    %% Edge labels (already defined in connections section)
-    %% Note: Mermaid will apply these from the earlier definition.
-    %%       No need to redefine them here if they are simple text labels.
+    A[Start] --> B(Load Data);
+    B --> C{Define Label & Features};
+    C --> D[Split Data: Training & Test Sets];
+    D --> E(Train Initial LR Model with Default C);
+    E --> F{Evaluate Initial Model: Confusion Matrix};
+    F --> G(Perform GridSearchCV for Optimal C);
+    G --> H(Train Optimal LR Model);
+    H --> I{Evaluate Optimal Model: Confusion Matrix};
+    I --> J(Plot Precision-Recall Curves);
+    J --> K(Plot ROC Curves & Calculate AUC);
+    K --> L(Perform Feature Selection - SelectKBest);
+    L --> M(Retrain & Evaluate with Selected Features);
+    M --> N(Save Optimal Model using Pickle);
+    N --> O[End];
