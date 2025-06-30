@@ -15,36 +15,60 @@ The following diagram illustrates the general machine learning workflow followed
 
 ```mermaid
 graph TD
-    subgraph Data Preparation
-        A[Start] --> B(Load Dataset);
-        B --> C(Define Label & Features);
-        C --> D(Split Data: Training & Test Sets);
-    end
+    %% Node Definitions (flat list first)
+    A[Start]
+    B(Load Dataset)
+    C(Define Label & Features)
+    D(Split Data: Training & Test Sets)
+    E(Train Initial LR Model with Default C)
+    F(Make Predictions: Probability & Class Labels)
+    G{Evaluate: Confusion Matrix & Initial Accuracy}
+    H(Perform GridSearchCV for Optimal C)
+    I(Train LR Model with Optimal C)
+    J(Make Predictions: Probability & Class Labels)
+    K{Evaluate: Confusion Matrix & Improved Accuracy}
+    L(Visualize: Precision-Recall Curves)
+    M(Visualize: ROC Curves & Calculate AUC)
+    N(Feature Selection: SelectKBest)
+    O(Retrain LR Model with Selected Features)
+    P{Evaluate: AUC after Feature Selection}
+    Q(Save Optimal Model using Pickle)
+    R[End]
 
-    D -- Data Processed --> E(Train Initial LR Model with Default C);
+    %% Connections
+    A --> B
+    B --> C
+    C --> D
+    D -- Data Processed --> E
+    E --> F
+    F --> G
+    G -- Optimization Needed --> H
+    H --> I
+    I --> J
+    J --> K
+    K --> L
+    L --> M
+    M -- Feature Analysis --> N
+    N --> O
+    O --> P
+    P -- High AUC? --> Q
+    Q --> R
+
+    %% Subgraph Grouping (applies visual grouping to already defined nodes)
+    subgraph Data Preparation
+        A --> D
+    end
 
     subgraph Model Training & Evaluation (Default)
-        E --> F(Make Predictions: Probability & Class Labels);
-        F --> G{Evaluate: Confusion Matrix & Initial Accuracy};
+        E --> G
     end
-
-    G -- Optimization Needed --> H(Perform GridSearchCV for Optimal C);
 
     subgraph Model Optimization & Refinement
-        H --> I(Train LR Model with Optimal C);
-        I --> J(Make Predictions: Probability & Class Labels);
-        J --> K{Evaluate: Confusion Matrix & Improved Accuracy};
-        K --> L(Visualize: Precision-Recall Curves);
-        L --> M(Visualize: ROC Curves & Calculate AUC);
+        H --> M
     end
 
-    M -- Feature Analysis --> N(Feature Selection: SelectKBest);
-
     subgraph Feature Engineering & Persistence
-        N --> O(Retrain LR Model with Selected Features);
-        O --> P{Evaluate: AUC after Feature Selection};
-        P -- High AUC? --> Q(Save Optimal Model using Pickle);
-        Q --> R[End];
+        N --> R
     end
 
     %% Apply some styling for visual appeal
@@ -64,7 +88,6 @@ graph TD
     style H stroke-dasharray: 5 5;
     style N stroke-dasharray: 5 5;
 
-    %% Edge labels for clarity
-    E -- Predict --> F;
-    I -- Predict --> J;
-    O -- Predict --> P;
+    %% Edge labels (already defined in connections section)
+    %% Note: Mermaid will apply these from the earlier definition.
+    %%       No need to redefine them here if they are simple text labels.
