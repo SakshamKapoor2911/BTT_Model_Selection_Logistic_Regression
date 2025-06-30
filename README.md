@@ -21,14 +21,18 @@ graph TD
         C --> D(Split Data: Training & Test Sets);
     end
 
+    %% Connections from Data Preparation to the next subgraph
+    D --> E(Train Initial LR Model with Default C);
+
     subgraph Model Training & Evaluation (Default)
-        D --> E(Train Initial LR Model with Default C);
         E --> F(Make Predictions: Probability & Class Labels);
         F --> G{Evaluate: Confusion Matrix & Initial Accuracy};
     end
 
+    %% Connections from Model Training & Evaluation (Default) to the next subgraph
+    G --> H(Perform GridSearchCV for Optimal C);
+
     subgraph Model Optimization & Refinement
-        G --> H(Perform GridSearchCV for Optimal C);
         H --> I(Train LR Model with Optimal C);
         I --> J(Make Predictions: Probability & Class Labels);
         J --> K{Evaluate: Confusion Matrix & Improved Accuracy};
@@ -36,8 +40,10 @@ graph TD
         L --> M(Visualize: ROC Curves & Calculate AUC);
     end
 
+    %% Connections from Model Optimization & Refinement to the next subgraph
+    M --> N(Feature Selection: SelectKBest);
+
     subgraph Feature Engineering & Persistence
-        M --> N(Feature Selection: SelectKBest);
         N --> O(Retrain LR Model with Selected Features);
         O --> P{Evaluate: AUC after Feature Selection};
         P -- High AUC? --> Q(Save Optimal Model using Pickle);
