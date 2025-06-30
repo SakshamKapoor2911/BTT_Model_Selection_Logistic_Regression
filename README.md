@@ -15,17 +15,53 @@ The following diagram illustrates the general machine learning workflow followed
 
 ```mermaid
 graph TD
-    A[Start] --> B(Load Data);
-    B --> C{Define Label & Features};
-    C --> D[Split Data: Training & Test Sets];
-    D --> E(Train Initial LR Model with Default C);
-    E --> F{Evaluate Initial Model: Confusion Matrix};
-    F --> G(Perform GridSearchCV for Optimal C);
-    G --> H(Train Optimal LR Model);
-    H --> I{Evaluate Optimal Model: Confusion Matrix};
-    I --> J(Plot Precision-Recall Curves);
-    J --> K(Plot ROC Curves & Calculate AUC);
-    K --> L(Perform Feature Selection - SelectKBest);
-    L --> M(Retrain & Evaluate with Selected Features);
-    M --> N(Save Optimal Model using Pickle);
-    N --> O[End];
+    subgraph Data Preparation
+        A[Start] --> B(Load Dataset);
+        B --> C(Define Label & Features);
+        C --> D(Split Data: Training & Test Sets);
+    end
+
+    subgraph Model Training & Evaluation (Default)
+        D --> E(Train Initial LR Model with Default C);
+        E --> F(Make Predictions: Probability & Class Labels);
+        F --> G{Evaluate: Confusion Matrix & Initial Accuracy};
+    end
+
+    subgraph Model Optimization & Refinement
+        G --> H(Perform GridSearchCV for Optimal C);
+        H --> I(Train LR Model with Optimal C);
+        I --> J(Make Predictions: Probability & Class Labels);
+        J --> K{Evaluate: Confusion Matrix & Improved Accuracy};
+        K --> L(Visualize: Precision-Recall Curves);
+        L --> M(Visualize: ROC Curves & Calculate AUC);
+    end
+
+    subgraph Feature Engineering & Persistence
+        M --> N(Feature Selection: SelectKBest);
+        N --> O(Retrain LR Model with Selected Features);
+        O --> P{Evaluate: AUC after Feature Selection};
+        P -- High AUC? --> Q(Save Optimal Model using Pickle);
+        Q --> R[End];
+    end
+
+    %% Apply some styling for visual appeal
+    classDef start_end fill:#a8e6cf,stroke:#333,stroke-width:2px;
+    classDef data_process fill:#ffcccb,stroke:#a33,stroke-width:2px;
+    classDef model_eval fill:#d4eeff,stroke:#2b5f7e,stroke-width:2px;
+    classDef optimization fill:#fffacd,stroke:#d4a400,stroke-width:2px;
+    classDef persist fill:#b8e0d4,stroke:#3a7d44,stroke-width:2px;
+
+    class A,R start_end;
+    class B,C,D data_process;
+    class E,F,G model_eval;
+    class H,I,J,K,L,M optimization;
+    class N,O,P,Q persist;
+
+    %% Dotted lines for specific transitions
+    style H stroke-dasharray: 5 5;
+    style N stroke-dasharray: 5 5;
+
+    %% Edge labels for clarity
+    E -- Predict --> F;
+    I -- Predict --> J;
+    O -- Predict --> P;
