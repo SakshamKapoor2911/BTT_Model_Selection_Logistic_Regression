@@ -21,16 +21,14 @@ graph TD
         C --> D(Split Data: Training & Test Sets);
     end
 
-    %% Connections from Data Preparation to the next subgraph
-    D --> E(Train Initial LR Model with Default C);
+    D -- Data Processed --> E(Train Initial LR Model with Default C);
 
     subgraph Model Training & Evaluation (Default)
         E --> F(Make Predictions: Probability & Class Labels);
         F --> G{Evaluate: Confusion Matrix & Initial Accuracy};
     end
 
-    %% Connections from Model Training & Evaluation (Default) to the next subgraph
-    G --> H(Perform GridSearchCV for Optimal C);
+    G -- Optimization Needed --> H(Perform GridSearchCV for Optimal C);
 
     subgraph Model Optimization & Refinement
         H --> I(Train LR Model with Optimal C);
@@ -40,8 +38,7 @@ graph TD
         L --> M(Visualize: ROC Curves & Calculate AUC);
     end
 
-    %% Connections from Model Optimization & Refinement to the next subgraph
-    M --> N(Feature Selection: SelectKBest);
+    M -- Feature Analysis --> N(Feature Selection: SelectKBest);
 
     subgraph Feature Engineering & Persistence
         N --> O(Retrain LR Model with Selected Features);
